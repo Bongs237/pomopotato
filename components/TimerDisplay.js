@@ -60,7 +60,7 @@ export default function TimerDisplay({
               isWorkMode ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
             }`}
           >
-            {isWorkMode ? "work 🏢" : "break 😴"}
+            {isWorkMode ? "LOCK IN 💪" : "break 😴"}
           </div>
 
           <div className={`font-bold text-gray-800 ${fontSize}`}>
