@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { toMinSec } from "@/lib/time_utils"
+import { toMinSec, toTotalSecs } from "@/lib/time_utils"
 
 export default function SettingsDialog({
   isOpen,
@@ -37,22 +37,36 @@ export default function SettingsDialog({
 
   const handleChange = (setter) => (e) => {
     const val = e.target.value;
+
     if (val.trim() === "") {
       setter("");
-      console.log("Thing 1")
     } else if (Number.parseInt(val)) {
       setter(Number.parseInt(val));
-      console.log("Thing 2")
     } else {
       setter(0);
-      console.log("Thing 3")
     }
   };
 
   const sendSetTimes = () => {
-    const newWorkTotalSeconds = parseOr0(localWorkMinutes) * 60 + parseOr0(localWorkSeconds);
-    const newBreakTotalSeconds = parseOr0(localBreakMinutes) * 60 + parseOr0(localBreakSeconds);
-    
+    // Parse and clamp to minimum 1 second
+    let parsedWorkMinutes = parseOr0(localWorkMinutes);
+    let parsedWorkSeconds = parseOr0(localWorkSeconds);
+    let parsedBreakMinutes = parseOr0(localBreakMinutes);
+    let parsedBreakSeconds = parseOr0(localBreakSeconds);
+
+    let newWorkTotalSeconds = toTotalSecs(parsedWorkMinutes, parsedWorkSeconds);
+    let newBreakTotalSeconds = toTotalSecs(parsedBreakMinutes, parsedBreakSeconds);
+
+    if (newWorkTotalSeconds <= 0) newWorkTotalSeconds = 1;
+    if (newBreakTotalSeconds <= 0) newBreakTotalSeconds = 1;
+
+    // Update local state with parsed values
+    setLocalWorkMinutes(parsedWorkMinutes);
+    setLocalWorkSeconds(parsedWorkSeconds);
+    setLocalBreakMinutes(parsedBreakMinutes);
+    setLocalBreakSeconds(parsedBreakSeconds);
+
+    // Update w/ new values
     onSave(newWorkTotalSeconds, newBreakTotalSeconds);
   };
 

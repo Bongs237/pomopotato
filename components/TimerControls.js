@@ -1,14 +1,15 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Pause, RotateCcw, Settings } from "lucide-react"
+import { Play, Pause, RotateCcw, Settings, ChevronLast } from "lucide-react"
 
 export default function TimerControls({ 
   isRunning, 
   isWorkMode, 
   onToggleTimer, 
-  onResetTimer, 
-  onOpenSettings 
+  onResetTimer,
+  onNextMode,
+  onOpenSettings,
 }) {
   return (
     <div className="flex items-center gap-4">
@@ -20,6 +21,15 @@ export default function TimerControls({
         }`}
       >
         {isRunning ? <Pause size={24} /> : <Play size={24} />}
+      </Button>
+
+      <Button 
+        onClick={onNextMode} 
+        size="lg"
+        variant="outline" 
+        className="w-16 h-16 rounded-full bg-transparent"
+      >
+        <ChevronLast size={24} />
       </Button>
 
       <Button 

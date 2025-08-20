@@ -24,7 +24,7 @@ export default function PomodoroTimer() {
 
   const intervalRef = useRef(null);
 
-  // I'm gonna local on your storage
+  // I'm gonna local on your storage lil bro
   useEffect(() => {
     const localWork = localStorage.getItem("workSeconds");
     const localBreak = localStorage.getItem("breakSeconds");
@@ -41,6 +41,12 @@ export default function PomodoroTimer() {
     }
   }, []);
 
+  const switchModes = () => {
+    setIsWorkMode((prev) => !prev);
+    const newTime = isWorkMode ? breakSeconds : workSeconds;
+    setTimeLeft(newTime);
+  };
+
   // Timer logic
   useEffect(() => {
     if (isRunning && timeLeft >= 0) {
@@ -53,9 +59,7 @@ export default function PomodoroTimer() {
       setBreakSeconds(nextBreakSeconds);
 
       // Switch modes
-      setIsWorkMode((prev) => !prev);
-      const newTime = isWorkMode ? breakSeconds : workSeconds;
-      setTimeLeft(newTime);
+      switchModes();
     } else {
       // Not running
       clearInterval(intervalRef.current);
@@ -71,7 +75,11 @@ export default function PomodoroTimer() {
   const resetTimer = () => {
     setIsRunning(false);
     setIsWorkMode(true);
-    setTimeLeft(workSeconds);
+
+    setWorkSeconds(nextWorkSeconds);
+    setBreakSeconds(nextBreakSeconds);
+
+    setTimeLeft(nextWorkSeconds);
   };
 
   const handleSettingsSave = (newWorkTotalSeconds, newBreakTotalSeconds) => {
@@ -121,10 +129,13 @@ export default function PomodoroTimer() {
         strokeWidth={40}
         fontSize="text-8xl"
 
-        isRunning={isRunning}
-        onToggleTimer={toggleTimer}
-        onResetTimer={resetTimer}
-        onOpenSettings={openSettings}
+        timerControlsProps={{
+          isRunning,
+          onToggleTimer: toggleTimer,
+          onResetTimer: resetTimer,
+          onNextMode: switchModes,
+          onOpenSettings: openSettings,
+        }}
       />
 
       <SettingsDialog

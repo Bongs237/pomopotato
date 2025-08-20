@@ -11,10 +11,7 @@ export default function TimerDisplay({
   strokeWidth = 20,
   fontSize = "text-6xl",
 
-  isRunning,
-  onToggleTimer,
-  onResetTimer,
-  onOpenSettings,
+  timerControlsProps
 }) {
   // Calculate progress for the arc
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
@@ -68,13 +65,7 @@ export default function TimerDisplay({
           </div>
         </div>
 
-        <TimerControls
-          isRunning={isRunning}
-          isWorkMode={isWorkMode}
-          onToggleTimer={onToggleTimer}
-          onResetTimer={onResetTimer}
-          onOpenSettings={onOpenSettings}
-        />
+        <TimerControls isWorkMode={isWorkMode} {...timerControlsProps} />
       </div>
     </div>
   );
