@@ -1,6 +1,7 @@
 "use client"
 
 import TimerControls from "@/components/TimerControls"
+import { toMinSec } from "@/lib/time_utils";
 
 export default function TimerDisplay({ 
   timeLeft, 
@@ -23,8 +24,7 @@ export default function TimerDisplay({
   const center = arcSize / 2;
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const [mins, secs] = toMinSec(seconds);
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 

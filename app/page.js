@@ -4,73 +4,107 @@ import { useState, useEffect, useRef } from "react";
 import TimerDisplay from "@/components/TimerDisplay"
 import SettingsDialog from "@/components/SettingsDialog"
 
+const DEFAULT_WORK_SECS = 25 * 60;
+const DEFAULT_BREAK_SECS = 5 * 60;
+
 export default function PomodoroTimer() {
-  const [workTotalSeconds, setWorkTotalSeconds] = useState(25 * 60); // 25 minutes in seconds
-  const [breakTotalSeconds, setBreakTotalSeconds] = useState(5 * 60); // 5 minutes in seconds
+  const [workSeconds, setWorkSeconds] = useState(DEFAULT_WORK_SECS);
+  const [breakSeconds, setBreakSeconds] = useState(DEFAULT_BREAK_SECS);
+
+  // this is for if you're in the middle of the timer running and you change settings
+  // then it should only take effect on next cycle
+  const [nextWorkSeconds, setNextWorkSeconds] = useState(workSeconds);
+  const [nextBreakSeconds, setNextBreakSeconds] = useState(breakSeconds);
+
+  const [timeLeft, setTimeLeft] = useState(workSeconds);
 
   const [isWorkMode, setIsWorkMode] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(25 * 60); // in seconds
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const intervalRef = useRef(null);
 
-  // Initialize timer with work time
+  // I'm gonna local on your storage
   useEffect(() => {
-    setTimeLeft(workTotalSeconds);
-  }, [workTotalSeconds])
+    const localWork = localStorage.getItem("workSeconds");
+    const localBreak = localStorage.getItem("breakSeconds");
+
+    if (localWork) {
+      setWorkSeconds(localWork);
+      setNextWorkSeconds(localWork);
+
+      setTimeLeft(localWork);
+    }
+    if (localBreak) {
+      setBreakSeconds(localBreak);
+      setNextBreakSeconds(localBreak);
+    }
+  }, []);
 
   // Timer logic
   useEffect(() => {
-    if (isRunning && timeLeft > 0) {
+    if (isRunning && timeLeft >= 0) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
-      // Switch modes when timer reaches 0
+    } else if (timeLeft < 0) {
+      // update w/ next cycle settings
+      setWorkSeconds(nextWorkSeconds);
+      setBreakSeconds(nextBreakSeconds);
+
+      // Switch modes
       setIsWorkMode((prev) => !prev);
-      const newTime = isWorkMode ? breakTotalSeconds : workTotalSeconds;
+      const newTime = isWorkMode ? breakSeconds : workSeconds;
       setTimeLeft(newTime);
-      setIsRunning(false);
     } else {
+      // Not running
       clearInterval(intervalRef.current);
     }
 
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, timeLeft, isWorkMode, workTotalSeconds, breakTotalSeconds]);
+  }, [isRunning, timeLeft, isWorkMode, workSeconds, breakSeconds]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
-  }
+  };
 
   const resetTimer = () => {
     setIsRunning(false);
     setIsWorkMode(true);
-    setTimeLeft(workTotalSeconds);
-  }
+    setTimeLeft(workSeconds);
+  };
 
   const handleSettingsSave = (newWorkTotalSeconds, newBreakTotalSeconds) => {
-    setWorkTotalSeconds(newWorkTotalSeconds);
-    setBreakTotalSeconds(newBreakTotalSeconds);
-    
-    if (isWorkMode) {
-      setTimeLeft(newWorkTotalSeconds);
-    } else {
-      setTimeLeft(newBreakTotalSeconds);
+    setNextWorkSeconds(newWorkTotalSeconds);
+    setNextBreakSeconds(newBreakTotalSeconds);
+
+    if (totalTime === timeLeft) { // If your timer is not in progress
+      setWorkSeconds(newWorkTotalSeconds);
+      setBreakSeconds(newWorkTotalSeconds);
+
+      if (isWorkMode) {
+        setTimeLeft(newWorkTotalSeconds);
+      } else {
+        setTimeLeft(newBreakTotalSeconds);
+      }
     }
+
+    localStorage.setItem("workSeconds", newWorkTotalSeconds);
+    localStorage.setItem("breakSeconds", newBreakTotalSeconds);
+
     setIsSettingsOpen(false);
-  }
+  };
 
   const openSettings = () => {
     setIsSettingsOpen(true);
-  }
+  };
 
   const closeSettings = () => {
     setIsSettingsOpen(false);
-  }
+  };
 
   // Calculate total time for progress
-  const totalTime = isWorkMode ? workTotalSeconds : breakTotalSeconds;
+  const totalTime = isWorkMode ? workSeconds : breakSeconds;
 
   // Dynamic background color based on mode
   const bgColor = isWorkMode
@@ -97,8 +131,8 @@ export default function PomodoroTimer() {
         isOpen={isSettingsOpen}
         onOpenChange={closeSettings}
 
-        workTotalSeconds={workTotalSeconds}
-        breakTotalSeconds={breakTotalSeconds}
+        workTotalSeconds={nextWorkSeconds}
+        breakTotalSeconds={nextBreakSeconds}
 
         onSave={handleSettingsSave}
       />

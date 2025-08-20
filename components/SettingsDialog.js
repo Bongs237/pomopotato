@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { toMinSec } from "@/lib/time_utils"
 
 export default function SettingsDialog({
   isOpen,
@@ -16,11 +17,8 @@ export default function SettingsDialog({
   
   onSave,
 }) {
-  // Convert total seconds to minutes and seconds for display
-  const workMinutes = Math.floor(workTotalSeconds / 60);
-  const workSeconds = workTotalSeconds % 60;
-  const breakMinutes = Math.floor(breakTotalSeconds / 60);
-  const breakSeconds = breakTotalSeconds % 60;
+  const [workMinutes, workSeconds] = toMinSec(workTotalSeconds);
+  const [breakMinutes, breakSeconds] = toMinSec(breakTotalSeconds);
 
   const [localWorkMinutes, setLocalWorkMinutes] = useState(workMinutes);
   const [localWorkSeconds, setLocalWorkSeconds] = useState(workSeconds);
@@ -35,9 +33,25 @@ export default function SettingsDialog({
     setLocalBreakSeconds(breakSeconds);
   }, [workTotalSeconds, breakTotalSeconds]);
 
+  const parseOr0 = (strNum) => Number.parseInt(strNum) || 0;
+
+  const handleChange = (setter) => (e) => {
+    const val = e.target.value;
+    if (val.trim() === "") {
+      setter("");
+      console.log("Thing 1")
+    } else if (Number.parseInt(val)) {
+      setter(Number.parseInt(val));
+      console.log("Thing 2")
+    } else {
+      setter(0);
+      console.log("Thing 3")
+    }
+  };
+
   const sendSetTimes = () => {
-    const newWorkTotalSeconds = localWorkMinutes * 60 + localWorkSeconds;
-    const newBreakTotalSeconds = localBreakMinutes * 60 + localBreakSeconds;
+    const newWorkTotalSeconds = parseOr0(localWorkMinutes) * 60 + parseOr0(localWorkSeconds);
+    const newBreakTotalSeconds = parseOr0(localBreakMinutes) * 60 + parseOr0(localBreakSeconds);
     
     onSave(newWorkTotalSeconds, newBreakTotalSeconds);
   };
@@ -60,8 +74,9 @@ export default function SettingsDialog({
                 <Input
                   id="work-minutes"
                   type="number"
+                  min="0"
                   value={localWorkMinutes}
-                  onChange={(e) => setLocalWorkMinutes(parseInt(e.target.value) || 0)}
+                  onChange={handleChange(setLocalWorkMinutes)}
                   className="mt-1"
                 />
               </div>
@@ -72,8 +87,9 @@ export default function SettingsDialog({
                 <Input
                   id="work-seconds"
                   type="number"
+                  min="0"
                   value={localWorkSeconds}
-                  onChange={(e) => setLocalWorkSeconds(parseInt(e.target.value) || 0)}
+                  onChange={handleChange(setLocalWorkSeconds)}
                   className="mt-1"
                 />
               </div>
@@ -91,8 +107,9 @@ export default function SettingsDialog({
                 <Input
                   id="break-minutes"
                   type="number"
+                  min="0"
                   value={localBreakMinutes}
-                  onChange={(e) => setLocalBreakMinutes(parseInt(e.target.value) || 0)}
+                  onChange={handleChange(setLocalBreakMinutes)}
                   className="mt-1"
                 />
               </div>
@@ -103,8 +120,9 @@ export default function SettingsDialog({
                 <Input
                   id="break-seconds"
                   type="number"
+                  min="0"
                   value={localBreakSeconds}
-                  onChange={(e) => setLocalBreakSeconds(parseInt(e.target.value) || 0)}
+                  onChange={handleChange(setLocalBreakSeconds)}
                   className="mt-1"
                 />
               </div>
