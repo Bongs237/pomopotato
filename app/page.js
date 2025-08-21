@@ -119,7 +119,10 @@ export default function PomodoroTimer() {
           const newTime = prev - 1;
           const modeText = isWorkMode ? "work" : "break";
 
-          document.title = `${formatTime(newTime)} | ${modeText}`;
+          // only update title if time is not negative
+          if (newTime >= 0) {
+            document.title = `${formatTime(newTime)} | ${modeText}`;
+          }
           return newTime;
         });
       }, 1000);
@@ -157,6 +160,14 @@ export default function PomodoroTimer() {
     skipTransition,
     switchModes,
   ]);
+
+  // Update title when mode changes
+  useEffect(() => {
+    if (!showTransition) {
+      const modeText = isWorkMode ? "work" : "break";
+      document.title = `${formatTime(timeLeft)} | ${modeText}`;
+    }
+  }, [isWorkMode, timeLeft, showTransition]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
