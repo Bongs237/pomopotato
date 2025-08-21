@@ -14,7 +14,11 @@ export default function TransitionScreen({ isWorkMode, onContinue }) {
     document.title = `it's ${nextMode} time!`;
 
     // Send notification if permission is granted, we haven't sent one yet, and the tab isn't active
-    if (Notification.permission === "granted" && !notificationSentRef.current && document.hidden) {
+    if (
+      Notification.permission === "granted" &&
+      !notificationSentRef.current &&
+      document.hidden
+    ) {
       try {
         new Notification(`it's ${nextMode} time!`, {
           icon: "/favicon.ico", // You can replace this with a custom icon
