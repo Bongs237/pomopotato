@@ -13,11 +13,10 @@ export default function TransitionScreen({ isWorkMode, onContinue }) {
   useEffect(() => {
     document.title = `it's ${nextMode} time!`;
 
-    // Send notification if permission is granted, we haven't sent one yet, and the tab isn't active
     if (Notification.permission === "granted" && !notificationSentRef.current && document.hidden) {
       try {
         new Notification(`it's ${nextMode} time!`, {
-          icon: "/favicon.ico", // You can replace this with a custom icon
+          icon: "/favicon.ico",
           badge: "/favicon.ico",
           requireInteraction: false,
           silent: false,
@@ -45,6 +44,10 @@ export default function TransitionScreen({ isWorkMode, onContinue }) {
         <Play size={20} className="mr-2" />
         continue
       </Button>
+
+      <audio autoPlay>
+        <source src={`${nextMode}.opus`} />
+      </audio>
     </div>
   );
 }

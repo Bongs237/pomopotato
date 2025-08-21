@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "pomopotato",
-  description: "a really minimalist pomodoro timer",
+  description: "a really minimalistic pomodoro timer",
 };
 
 export default function RootLayout({ children }) {
