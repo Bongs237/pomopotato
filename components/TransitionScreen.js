@@ -31,7 +31,7 @@ export default function TransitionScreen({ isWorkMode, onContinue }) {
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
       <div className="text-center">
-        <h1 className={`text-6xl font-bold mb-1 ${colors.text}`}>
+        <h1 className={`text-5xl lg:text-6xl font-bold mb-1 ${colors.text}`}>
           it's {!isWorkMode ? "work" : "break"} time!
         </h1>
       </div>

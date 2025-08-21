@@ -170,12 +170,14 @@ export default function SettingsDialog({
             <Label className="text-base font-medium">timer behavior</Label>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label htmlFor="skip-transition" className="text-sm text-gray-600">
-                  skip transition screen
+                <Label htmlFor="skip-transition">
+                  <div>
+                    <p className="text-sm text-gray-600">skip screen</p>
+                    <p className="text-xs text-gray-500">
+                      start the next mode w/o showing transition screen
+                    </p>
+                  </div>
                 </Label>
-                <p className="text-xs text-gray-500">
-                  start the next mode w/o showing transition screen
-                </p>
               </div>
               <Switch
                 id="skip-transition"
