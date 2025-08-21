@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import TimerDisplay from "@/components/TimerDisplay";
 import SettingsDialog from "@/components/SettingsDialog";
 import TransitionScreen from "@/components/TransitionScreen";
+import TimerControls from "@/components/TimerControls";
+
 import { COLORS } from "@/lib/colors";
 import { formatTime } from "@/lib/time_utils";
 
@@ -27,7 +29,36 @@ export default function PomodoroTimer() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showTransition, setShowTransition] = useState(false);
 
+  const [dimensions, setDimensions] = useState({
+    arcSize: 400,
+    strokeWidth: 20
+  });
+
   const intervalRef = useRef(null);
+
+  // Responsive dimensions calculation
+  useEffect(() => {
+    const updateDimensions = () => {
+      const screenWidth = window.innerWidth;
+      
+      // Calculate responsive arc size (between 300 and 600)
+      const responsiveArcSize = Math.max(300, Math.min(600, screenWidth * 0.8));
+      
+      // Calculate responsive stroke width (between 12 and 30)
+      const responsiveStrokeWidth = Math.max(12, Math.min(30, screenWidth * 0.02));
+      
+      setDimensions({
+        arcSize: responsiveArcSize,
+        strokeWidth: responsiveStrokeWidth
+      });
+    };
+
+    updateDimensions();
+
+    window.addEventListener('resize', updateDimensions);
+
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
 
   // Request notification permission on app load
   useEffect(() => {
@@ -161,7 +192,7 @@ export default function PomodoroTimer() {
   const totalTime = isWorkMode ? workSeconds : breakSeconds;
 
   // Get animation colors based on current mode. Since this is the transition, needs to be the other mode
-  const colors = isWorkMode ? COLORS.break.animation : COLORS.work.animation;
+  const colors = !isWorkMode ? COLORS.work.animation : COLORS.break.animation;
 
   return (
     <motion.div
@@ -181,8 +212,8 @@ export default function PomodoroTimer() {
             }
           : {
               backgroundColor: isWorkMode
-                ? "rgb(239 246 255)"
-                : "rgb(240 253 244)",
+                ? COLORS.work.light
+                : COLORS.break.light,
             }
       }
       transition={
@@ -193,7 +224,7 @@ export default function PomodoroTimer() {
               ease: "easeInOut",
             }
           : {
-              duration: 1,
+              duration: 0.1,
               ease: "easeInOut",
             }
       }
@@ -201,20 +232,24 @@ export default function PomodoroTimer() {
       {showTransition ? (
         <TransitionScreen isWorkMode={isWorkMode} onContinue={handleContinue} />
       ) : (
-        <TimerDisplay
-          timeLeft={timeLeft}
-          isWorkMode={isWorkMode}
-          totalTime={totalTime}
-          arcSize={600}
-          strokeWidth={40}
-          fontSize="text-8xl"
-          timerControlsProps={{
-            isRunning,
-            onToggleTimer: toggleTimer,
-            onNextMode: () => setTimeLeft(-1),
-            onOpenSettings: openSettings,
-          }}
-        />
+        <div className="flex flex-col justify-center items-center">
+          <TimerDisplay
+            timeLeft={timeLeft}
+            isWorkMode={isWorkMode}
+            totalTime={totalTime}
+            fontSize="text-5xl sm:text-6xl md:text-8xl"
+            arcSize={dimensions.arcSize}
+            strokeWidth={dimensions.strokeWidth}
+          />
+
+          <TimerControls
+            isWorkMode={isWorkMode}
+            isRunning={isRunning}
+            onToggleTimer={toggleTimer}
+            onNextMode={() => setTimeLeft(-1)}
+            onOpenSettings={openSettings}
+          />
+        </div>
       )}
 
       <SettingsDialog

@@ -51,7 +51,7 @@ export default function TimerDisplay({
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center mb-10">
           <div
-            className={`text-lg font-medium mb-4 px-4 py-2 rounded-full ${colors.badge}`}
+            className={`text-sm md:text-lg font-medium mb-4 px-4 py-2 rounded-full ${colors.badge}`}
           >
             {isWorkMode ? "work 💪" : "break 😴"}
           </div>
@@ -60,8 +60,6 @@ export default function TimerDisplay({
             {formatTime(timeLeft)}
           </div>
         </div>
-
-        <TimerControls isWorkMode={isWorkMode} {...timerControlsProps} />
       </div>
     </div>
   );

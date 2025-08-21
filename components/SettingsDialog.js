@@ -83,7 +83,7 @@ export default function SettingsDialog({
       <DialogContent
         className="sm:max-w-md"
         onInteractOutside={(e) => e.preventDefault()}
-        aria-describedby={"timer settings"}
+        aria-describedby={undefined}
       >
         <DialogHeader>
           <DialogTitle className="sr-only">timer settings</DialogTitle>
