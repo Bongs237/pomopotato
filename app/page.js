@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-import TimerDisplay from "@/components/TimerDisplay"
-import SettingsDialog from "@/components/SettingsDialog"
-import TransitionScreen from "@/components/TransitionScreen"
-import { COLORS } from "@/lib/colors"
+import TimerDisplay from "@/components/TimerDisplay";
+import SettingsDialog from "@/components/SettingsDialog";
+import TransitionScreen from "@/components/TransitionScreen";
+import { COLORS } from "@/lib/colors";
 import { formatTime } from "@/lib/time_utils";
 
 const DEFAULT_WORK_SECS = 25 * 60;
@@ -32,11 +32,11 @@ export default function PomodoroTimer() {
   // Request notification permission on app load
   useEffect(() => {
     const requestNotificationPermission = async () => {
-      if (Notification.permission === 'default') {
+      if (Notification.permission === "default") {
         try {
           await Notification.requestPermission();
         } catch (error) {
-          console.error('Failed to request notification permission:', error);
+          console.error("Failed to request notification permission:", error);
         }
       }
     };
@@ -89,10 +89,10 @@ export default function PomodoroTimer() {
       // Stop the timer
       setIsRunning(false);
       clearInterval(intervalRef.current);
-      
+
       // Show transition screen
       setShowTransition(true);
-      
+
       // update w/ next cycle settings
       setWorkSeconds(nextWorkSeconds);
       setBreakSeconds(nextBreakSeconds);
@@ -102,7 +102,15 @@ export default function PomodoroTimer() {
     }
 
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, timeLeft, isWorkMode, workSeconds, breakSeconds, nextWorkSeconds, nextBreakSeconds]);
+  }, [
+    isRunning,
+    timeLeft,
+    isWorkMode,
+    workSeconds,
+    breakSeconds,
+    nextWorkSeconds,
+    nextBreakSeconds,
+  ]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
@@ -124,7 +132,8 @@ export default function PomodoroTimer() {
     setNextWorkSeconds(newWorkTotalSeconds);
     setNextBreakSeconds(newBreakTotalSeconds);
 
-    if (totalTime === timeLeft) { // If your timer is not in progress
+    if (totalTime === timeLeft) {
+      // If your timer is not in progress
       setWorkSeconds(newWorkTotalSeconds);
       setBreakSeconds(newWorkTotalSeconds);
 
@@ -150,50 +159,55 @@ export default function PomodoroTimer() {
   };
 
   const totalTime = isWorkMode ? workSeconds : breakSeconds;
-  
+
   // Get animation colors based on current mode. Since this is the transition, needs to be the other mode
   const colors = isWorkMode ? COLORS.break.animation : COLORS.work.animation;
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen flex items-center justify-center"
-      animate={showTransition ? {
-        backgroundColor: [
-          colors.light,
-          colors.medium,
-          colors.dark,
-          colors.darker,
-          colors.dark,
-          colors.medium,
-          colors.light
-        ]
-      } : {
-        backgroundColor: isWorkMode ? "rgb(239 246 255)" : "rgb(240 253 244)"
-      }}
-
-      transition={showTransition ? {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      } : {
-        duration: 1,
-        ease: "easeInOut"
-      }}
+      animate={
+        showTransition
+          ? {
+              backgroundColor: [
+                colors.light,
+                colors.medium,
+                colors.dark,
+                colors.darker,
+                colors.dark,
+                colors.medium,
+                colors.light,
+              ],
+            }
+          : {
+              backgroundColor: isWorkMode
+                ? "rgb(239 246 255)"
+                : "rgb(240 253 244)",
+            }
+      }
+      transition={
+        showTransition
+          ? {
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }
+          : {
+              duration: 1,
+              ease: "easeInOut",
+            }
+      }
     >
       {showTransition ? (
-        <TransitionScreen 
-          isWorkMode={isWorkMode}
-          onContinue={handleContinue}
-        />
+        <TransitionScreen isWorkMode={isWorkMode} onContinue={handleContinue} />
       ) : (
-        <TimerDisplay 
+        <TimerDisplay
           timeLeft={timeLeft}
           isWorkMode={isWorkMode}
           totalTime={totalTime}
           arcSize={600}
           strokeWidth={40}
           fontSize="text-8xl"
-
           timerControlsProps={{
             isRunning,
             onToggleTimer: toggleTimer,
@@ -206,10 +220,8 @@ export default function PomodoroTimer() {
       <SettingsDialog
         isOpen={isSettingsOpen}
         onOpenChange={closeSettings}
-
         workTotalSeconds={nextWorkSeconds}
         breakTotalSeconds={nextBreakSeconds}
-
         onSave={handleSettingsSave}
       />
     </motion.div>

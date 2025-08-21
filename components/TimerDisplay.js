@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import TimerControls from "@/components/TimerControls"
+import TimerControls from "@/components/TimerControls";
 import { formatTime } from "@/lib/time_utils";
-import { COLORS } from "@/lib/colors"
+import { COLORS } from "@/lib/colors";
 
-export default function TimerDisplay({ 
-  timeLeft, 
-  isWorkMode, 
+export default function TimerDisplay({
+  timeLeft,
+  isWorkMode,
   totalTime,
   arcSize = 400,
   strokeWidth = 20,
   fontSize = "text-6xl",
 
-  timerControlsProps
+  timerControlsProps,
 }) {
   // Calculate progress for the arc
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
 
   // Calculate radius based on size (keeping some padding)
-  const radius = (arcSize * 0.45); // 45% of size for radius
+  const radius = arcSize * 0.45; // 45% of size for radius
   const center = arcSize / 2;
 
   const colors = isWorkMode ? COLORS.work : COLORS.break;
@@ -26,13 +26,13 @@ export default function TimerDisplay({
   return (
     <div className="relative">
       <svg width={arcSize} height={arcSize} className="transform -rotate-90">
-        <circle 
+        <circle
           cx={center}
           cy={center}
           r={radius}
-          stroke={colors.strokeLight} 
-          strokeWidth={strokeWidth} 
-          fill="none" 
+          stroke={colors.strokeLight}
+          strokeWidth={strokeWidth}
+          fill="none"
         />
         <circle
           cx={center}

@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'pomopotato',
-  description: 'a really minimalist pomodoro timer',
+  title: "pomopotato",
+  description: "a really minimalist pomodoro timer",
 };
 
 export default function RootLayout({ children }) {

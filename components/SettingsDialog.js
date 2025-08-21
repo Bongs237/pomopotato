@@ -1,12 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toMinSec, toTotalSecs } from "@/lib/time_utils"
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toMinSec, toTotalSecs } from "@/lib/time_utils";
 
 export default function SettingsDialog({
   isOpen,
@@ -14,7 +19,7 @@ export default function SettingsDialog({
 
   workTotalSeconds,
   breakTotalSeconds,
-  
+
   onSave,
 }) {
   const [workMinutes, workSeconds] = toMinSec(workTotalSeconds);
@@ -55,7 +60,10 @@ export default function SettingsDialog({
     let parsedBreakSeconds = parseOr0(localBreakSeconds);
 
     let newWorkTotalSeconds = toTotalSecs(parsedWorkMinutes, parsedWorkSeconds);
-    let newBreakTotalSeconds = toTotalSecs(parsedBreakMinutes, parsedBreakSeconds);
+    let newBreakTotalSeconds = toTotalSecs(
+      parsedBreakMinutes,
+      parsedBreakSeconds,
+    );
 
     if (newWorkTotalSeconds <= 0) newWorkTotalSeconds = 1;
     if (newBreakTotalSeconds <= 0) newBreakTotalSeconds = 1;
@@ -72,7 +80,7 @@ export default function SettingsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-md"
         onInteractOutside={(e) => e.preventDefault()}
         aria-describedby={"timer settings"}
@@ -119,7 +127,10 @@ export default function SettingsDialog({
             <Label className="text-base font-medium">break time</Label>
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <Label htmlFor="break-minutes" className="text-sm text-gray-600">
+                <Label
+                  htmlFor="break-minutes"
+                  className="text-sm text-gray-600"
+                >
                   minutes
                 </Label>
                 <Input
@@ -132,7 +143,10 @@ export default function SettingsDialog({
                 />
               </div>
               <div className="flex-1">
-                <Label htmlFor="break-seconds" className="text-sm text-gray-600">
+                <Label
+                  htmlFor="break-seconds"
+                  className="text-sm text-gray-600"
+                >
                   seconds
                 </Label>
                 <Input
