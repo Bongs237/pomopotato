@@ -149,7 +149,6 @@ export default function PomodoroTimer() {
     setIsRunning(!isRunning);
   };
 
-  /*
   const resetTimer = () => {
     setIsRunning(false);
     setIsWorkMode(true);
@@ -159,7 +158,6 @@ export default function PomodoroTimer() {
 
     setTimeLeft(nextWorkSeconds);
   };
-  */
 
   const handleSettingsSave = (newWorkTotalSeconds, newBreakTotalSeconds) => {
     setNextWorkSeconds(newWorkTotalSeconds);
@@ -245,6 +243,7 @@ export default function PomodoroTimer() {
             isWorkMode={isWorkMode}
             isRunning={isRunning}
             onToggleTimer={toggleTimer}
+            onResetTimer={resetTimer}
             onNextMode={() => setTimeLeft(-1)}
             onOpenSettings={openSettings}
           />

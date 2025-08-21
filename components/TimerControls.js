@@ -1,7 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Play, Pause, RotateCcw, Settings, ChevronLast } from "lucide-react";
+import { Button } from "@/components/ui/button"
+import { Play, Pause, RotateCcw, Settings, ChevronLast, EllipsisVertical } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 import { COLORS } from "@/lib/colors";
 
 export default function TimerControls({
@@ -9,6 +18,7 @@ export default function TimerControls({
   isWorkMode,
   onToggleTimer,
   onNextMode,
+  onResetTimer,
   onOpenSettings,
 }) {
   const colors = isWorkMode ? COLORS.work : COLORS.break;
@@ -24,15 +34,6 @@ export default function TimerControls({
       </Button>
 
       <Button
-        onClick={onNextMode}
-        size="lg"
-        variant="outline"
-        className="w-16 h-16 rounded-full bg-transparent"
-      >
-        <ChevronLast size={24} />
-      </Button>
-
-      <Button
         onClick={onOpenSettings}
         size="lg"
         variant="outline"
@@ -40,6 +41,16 @@ export default function TimerControls({
       >
         <Settings size={24} />
       </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <EllipsisVertical className="mx-2" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={onNextMode}><ChevronLast />Skip to next mode</DropdownMenuItem>
+          <DropdownMenuItem onClick={onResetTimer}><RotateCcw />Reset timer</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
