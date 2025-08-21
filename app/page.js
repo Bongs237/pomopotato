@@ -93,9 +93,11 @@ export default function PomodoroTimer() {
   }, []);
 
   const switchModes = () => {
-    setIsWorkMode((prev) => !prev);
-    const newTime = isWorkMode ? breakSeconds : workSeconds;
-    setTimeLeft(newTime);
+    setIsWorkMode((prev) => {
+      const newTime = prev ? breakSeconds : workSeconds;
+      setTimeLeft(newTime);
+      return !prev;
+    });
   };
 
   const handleContinue = () => {
@@ -166,7 +168,7 @@ export default function PomodoroTimer() {
     if (totalTime === timeLeft) {
       // If your timer is not in progress
       setWorkSeconds(newWorkTotalSeconds);
-      setBreakSeconds(newWorkTotalSeconds);
+      setBreakSeconds(newBreakTotalSeconds);
 
       if (isWorkMode) {
         setTimeLeft(newWorkTotalSeconds);
@@ -196,26 +198,23 @@ export default function PomodoroTimer() {
 
   return (
     <motion.div
+      key={showTransition ? 'transition' : 'normal'}
       className="min-h-screen flex items-center justify-center"
-      animate={
-        showTransition
-          ? {
-              backgroundColor: [
-                colors.light,
-                colors.medium,
-                colors.dark,
-                colors.darker,
-                colors.dark,
-                colors.medium,
-                colors.light,
-              ],
-            }
-          : {
-              backgroundColor: isWorkMode
-                ? COLORS.work.light
-                : COLORS.break.light,
-            }
-      }
+      animate={{
+        backgroundColor: showTransition
+          ? [
+              colors.light,
+              colors.medium,
+              colors.dark,
+              colors.darker,
+              colors.dark,
+              colors.medium,
+              colors.light,
+            ]
+          : isWorkMode
+          ? COLORS.work.light
+          : COLORS.break.light,
+      }}
       transition={
         showTransition
           ? {
@@ -224,7 +223,7 @@ export default function PomodoroTimer() {
               ease: "easeInOut",
             }
           : {
-              duration: 0.1,
+              duration: 0.5,
               ease: "easeInOut",
             }
       }
