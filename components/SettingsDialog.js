@@ -72,18 +72,22 @@ export default function SettingsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent 
+        className="sm:max-w-md"
+        onInteractOutside={(e) => e.preventDefault()}
+        aria-describedby={"timer settings"}
+      >
         <DialogHeader>
-          <DialogTitle>Timer Settings</DialogTitle>
+          <DialogTitle className="sr-only">timer settings</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           {/* Work time settings */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">Work Time</Label>
+            <Label className="text-base font-medium">work time</Label>
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <Label htmlFor="work-minutes" className="text-sm text-gray-600">
-                  Minutes
+                  minutes
                 </Label>
                 <Input
                   id="work-minutes"
@@ -96,7 +100,7 @@ export default function SettingsDialog({
               </div>
               <div className="flex-1">
                 <Label htmlFor="work-seconds" className="text-sm text-gray-600">
-                  Seconds
+                  seconds
                 </Label>
                 <Input
                   id="work-seconds"
@@ -112,11 +116,11 @@ export default function SettingsDialog({
 
           {/* Break time settings */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">Break Time</Label>
+            <Label className="text-base font-medium">break time</Label>
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <Label htmlFor="break-minutes" className="text-sm text-gray-600">
-                  Minutes
+                  minutes
                 </Label>
                 <Input
                   id="break-minutes"
@@ -129,7 +133,7 @@ export default function SettingsDialog({
               </div>
               <div className="flex-1">
                 <Label htmlFor="break-seconds" className="text-sm text-gray-600">
-                  Seconds
+                  seconds
                 </Label>
                 <Input
                   id="break-seconds"
@@ -144,7 +148,7 @@ export default function SettingsDialog({
           </div>
 
           <Button onClick={sendSetTimes} className="w-full">
-            Save Settings
+            save
           </Button>
         </div>
       </DialogContent>

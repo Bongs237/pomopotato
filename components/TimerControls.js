@@ -2,23 +2,23 @@
 
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, Settings, ChevronLast } from "lucide-react"
+import { COLORS } from "@/lib/colors"
 
 export default function TimerControls({ 
   isRunning, 
   isWorkMode, 
-  onToggleTimer, 
-  onResetTimer,
+  onToggleTimer,
   onNextMode,
   onOpenSettings,
 }) {
+  const colors = isWorkMode ? COLORS.work : COLORS.break;
+  
   return (
     <div className="flex items-center gap-4">
       <Button
         onClick={onToggleTimer}
         size="lg"
-        className={`w-16 h-16 rounded-full ${
-          isWorkMode ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"
-        }`}
+        className={`w-16 h-16 rounded-full ${colors.button}`}
       >
         {isRunning ? <Pause size={24} /> : <Play size={24} />}
       </Button>
@@ -30,15 +30,6 @@ export default function TimerControls({
         className="w-16 h-16 rounded-full bg-transparent"
       >
         <ChevronLast size={24} />
-      </Button>
-
-      <Button 
-        onClick={onResetTimer} 
-        size="lg" 
-        variant="outline" 
-        className="w-16 h-16 rounded-full bg-transparent"
-      >
-        <RotateCcw size={24} />
       </Button>
 
       <Button 
