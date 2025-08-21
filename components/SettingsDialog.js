@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { toMinSec, toTotalSecs } from "@/lib/time_utils";
 
 export default function SettingsDialog({
@@ -19,6 +20,7 @@ export default function SettingsDialog({
 
   workTotalSeconds,
   breakTotalSeconds,
+  skipTransition,
 
   onSave,
 }) {
@@ -31,12 +33,15 @@ export default function SettingsDialog({
   const [localBreakMinutes, setLocalBreakMinutes] = useState(breakMinutes);
   const [localBreakSeconds, setLocalBreakSeconds] = useState(breakSeconds);
 
+  const [localSkipTransition, setLocalSkipTransition] = useState(skipTransition);
+
   useEffect(() => {
     setLocalWorkMinutes(workMinutes);
     setLocalWorkSeconds(workSeconds);
     setLocalBreakMinutes(breakMinutes);
     setLocalBreakSeconds(breakSeconds);
-  }, [workTotalSeconds, breakTotalSeconds]);
+    setLocalSkipTransition(skipTransition);
+  }, [workMinutes, workSeconds, breakMinutes, breakSeconds, workTotalSeconds, breakTotalSeconds, skipTransition]);
 
   const parseOr0 = (strNum) => Number.parseInt(strNum) || 0;
 
@@ -75,7 +80,7 @@ export default function SettingsDialog({
     setLocalBreakSeconds(parsedBreakSeconds);
 
     // Update w/ new values
-    onSave(newWorkTotalSeconds, newBreakTotalSeconds);
+    onSave(newWorkTotalSeconds, newBreakTotalSeconds, localSkipTransition);
   };
 
   return (
@@ -158,6 +163,25 @@ export default function SettingsDialog({
                   className="mt-1"
                 />
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-base font-medium">timer behavior</Label>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label htmlFor="skip-transition" className="text-sm text-gray-600">
+                  skip transition screen
+                </Label>
+                <p className="text-xs text-gray-500">
+                  start the next mode w/o showing transition screen
+                </p>
+              </div>
+              <Switch
+                id="skip-transition"
+                checked={localSkipTransition}
+                onCheckedChange={setLocalSkipTransition}
+              />
             </div>
           </div>
 

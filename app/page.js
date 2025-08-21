@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 
 import TimerDisplay from "@/components/TimerDisplay";
@@ -28,6 +28,7 @@ export default function PomodoroTimer() {
   const [isRunning, setIsRunning] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showTransition, setShowTransition] = useState(false);
+  const [skipTransition, setSkipTransition] = useState(false);
 
   const [dimensions, setDimensions] = useState({
     arcSize: 400,
@@ -79,6 +80,7 @@ export default function PomodoroTimer() {
   useEffect(() => {
     const localWork = localStorage.getItem("workSeconds");
     const localBreak = localStorage.getItem("breakSeconds");
+    const localSkipTransition = localStorage.getItem("skipTransition");
 
     if (localWork) {
       setWorkSeconds(localWork);
@@ -90,15 +92,18 @@ export default function PomodoroTimer() {
       setBreakSeconds(localBreak);
       setNextBreakSeconds(localBreak);
     }
+    if (localSkipTransition !== null) {
+      setSkipTransition(localSkipTransition === "true");
+    }
   }, []);
 
-  const switchModes = () => {
+  const switchModes = useCallback(() => {
     setIsWorkMode((prev) => {
       const newTime = prev ? breakSeconds : workSeconds;
       setTimeLeft(newTime);
       return !prev;
     });
-  };
+  }, [breakSeconds, workSeconds]);
 
   const handleContinue = () => {
     setShowTransition(false);
@@ -123,8 +128,14 @@ export default function PomodoroTimer() {
       setIsRunning(false);
       clearInterval(intervalRef.current);
 
-      // Show transition screen
-      setShowTransition(true);
+      // Show transition screen only if skip transition is disabled
+      if (!skipTransition) {
+        setShowTransition(true);
+      } else {
+        // Skip transition and go straight to next mode
+        switchModes();
+        setIsRunning(true);
+      }
 
       // update w/ next cycle settings
       setWorkSeconds(nextWorkSeconds);
@@ -143,6 +154,8 @@ export default function PomodoroTimer() {
     breakSeconds,
     nextWorkSeconds,
     nextBreakSeconds,
+    skipTransition,
+    switchModes,
   ]);
 
   const toggleTimer = () => {
@@ -159,9 +172,10 @@ export default function PomodoroTimer() {
     setTimeLeft(nextWorkSeconds);
   };
 
-  const handleSettingsSave = (newWorkTotalSeconds, newBreakTotalSeconds) => {
+  const handleSettingsSave = (newWorkTotalSeconds, newBreakTotalSeconds, newSkipTransition) => {
     setNextWorkSeconds(newWorkTotalSeconds);
     setNextBreakSeconds(newBreakTotalSeconds);
+    setSkipTransition(newSkipTransition);
 
     if (totalTime === timeLeft) {
       // If your timer is not in progress
@@ -177,6 +191,7 @@ export default function PomodoroTimer() {
 
     localStorage.setItem("workSeconds", newWorkTotalSeconds);
     localStorage.setItem("breakSeconds", newBreakTotalSeconds);
+    localStorage.setItem("skipTransition", newSkipTransition);
 
     setIsSettingsOpen(false);
   };
@@ -255,6 +270,7 @@ export default function PomodoroTimer() {
         onOpenChange={closeSettings}
         workTotalSeconds={nextWorkSeconds}
         breakTotalSeconds={nextBreakSeconds}
+        skipTransition={skipTransition}
         onSave={handleSettingsSave}
       />
     </motion.div>
