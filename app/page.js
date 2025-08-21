@@ -29,6 +29,21 @@ export default function PomodoroTimer() {
 
   const intervalRef = useRef(null);
 
+  // Request notification permission on app load
+  useEffect(() => {
+    const requestNotificationPermission = async () => {
+      if (Notification.permission === 'default') {
+        try {
+          await Notification.requestPermission();
+        } catch (error) {
+          console.error('Failed to request notification permission:', error);
+        }
+      }
+    };
+
+    requestNotificationPermission();
+  }, []);
+
   // I'm gonna local on your storage lil bro
   useEffect(() => {
     const localWork = localStorage.getItem("workSeconds");
@@ -167,7 +182,7 @@ export default function PomodoroTimer() {
     >
       {showTransition ? (
         <TransitionScreen 
-          nextMode={isWorkMode ? 'break' : 'work'}
+          isWorkMode={isWorkMode}
           onContinue={handleContinue}
         />
       ) : (
