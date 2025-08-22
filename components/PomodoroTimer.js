@@ -41,6 +41,15 @@ export default function PomodoroTimer() {
 
   const intervalRef = useRef(null);
 
+  const workSoundRef = useRef(null);
+  const breakSoundRef = useRef(null);
+
+  // set audio refs
+  useEffect(() => {
+    workSoundRef.current = new Audio("work.opus");
+    breakSoundRef.current = new Audio("break.opus");
+  }, []);
+
   // Responsive dimensions calculation
   useEffect(() => {
     const updateDimensions = () => {
@@ -80,7 +89,7 @@ export default function PomodoroTimer() {
     requestNotificationPermission();
   }, []);
 
-  // I'm gonna local on your storage lil bro
+  // localstorage loading
   useEffect(() => {
     const localWork = localStorage.getItem("workSeconds");
     const localBreak = localStorage.getItem("breakSeconds");
@@ -115,6 +124,14 @@ export default function PomodoroTimer() {
     setShowTransition(false);
     switchModes();
     setIsRunning(true);
+  };
+
+  // force browser to load audio
+  const primeAudio = (audioRef) => {
+    audioRef.current.play().then(() => {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    });
   };
 
   // Timer logic based on start time
@@ -189,6 +206,9 @@ export default function PomodoroTimer() {
       setTimerStartTime(null);
     } else {
       // Resume or start the timer
+      primeAudio(workSoundRef);
+      primeAudio(breakSoundRef);
+
       setIsRunning(true);
       if (pausedTimeLeft !== null) {
         // Resuming from pause
