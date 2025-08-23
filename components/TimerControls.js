@@ -47,8 +47,8 @@ export default function TimerControls({
           <EllipsisVertical className="mx-2" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={onNextMode}><ChevronLast />Skip to next mode</DropdownMenuItem>
-          <DropdownMenuItem onClick={onResetTimer}><RotateCcw />Reset timer</DropdownMenuItem>
+          <DropdownMenuItem onClick={onNextMode}><ChevronLast />skip to next mode</DropdownMenuItem>
+          <DropdownMenuItem onClick={onResetTimer}><RotateCcw />reset timer</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -89,24 +89,35 @@ export default function PomodoroTimer() {
     requestNotificationPermission();
   }, []);
 
-  // localstorage loading
+  // load from localstorage
   useEffect(() => {
-    const localWork = localStorage.getItem("workSeconds");
-    const localBreak = localStorage.getItem("breakSeconds");
+    const localWorkSeconds = localStorage.getItem("workSeconds");
+    const localBreakSeconds = localStorage.getItem("breakSeconds");
     const localSkipTransition = localStorage.getItem("skipTransition");
 
-    if (localWork) {
-      setWorkSeconds(localWork);
-      setNextWorkSeconds(localWork);
+    const localTimeLeft = localStorage.getItem("timeLeft");
+    const localIsWorkMode = localStorage.getItem("isWorkMode");
 
-      setTimeLeft(localWork);
+    if (localWorkSeconds) {
+      setWorkSeconds(localWorkSeconds);
+      setNextWorkSeconds(localWorkSeconds);
+
+      setTimeLeft(localWorkSeconds);
     }
-    if (localBreak) {
-      setBreakSeconds(localBreak);
-      setNextBreakSeconds(localBreak);
+    if (localBreakSeconds) {
+      setBreakSeconds(localBreakSeconds);
+      setNextBreakSeconds(localBreakSeconds);
     }
     if (localSkipTransition !== null) {
       setSkipTransition(localSkipTransition === "true");
+    }
+
+    if (localTimeLeft) {
+      setTimeLeft(localTimeLeft);
+      setPausedTimeLeft(localTimeLeft);
+    }
+    if (localIsWorkMode) {
+      setIsWorkMode(localIsWorkMode === "true");
     }
   }, []);
 
@@ -133,6 +144,12 @@ export default function PomodoroTimer() {
       audioRef.current.currentTime = 0;
     });
   };
+
+  // Save current time left, and mode in local storage so you can pick up where you left off when reloading page
+  useEffect(() => {
+    localStorage.setItem("timeLeft", timeLeft);
+    localStorage.setItem("isWorkMode", isWorkMode);
+  }, [timeLeft, isWorkMode]);
 
   // Timer logic based on start time
   useEffect(() => {
