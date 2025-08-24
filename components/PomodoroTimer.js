@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion";
 
 import TimerDisplay from "@/components/TimerDisplay";
 import SettingsDialog from "@/components/SettingsDialog";
