@@ -95,18 +95,24 @@ export default function PomodoroTimer() {
     const localBreakSeconds = localStorage.getItem("breakSeconds");
     const localSkipTransition = localStorage.getItem("skipTransition");
 
-    const localTimeLeft = localStorage.getItem("timeLeft");
-    const localIsWorkMode = localStorage.getItem("isWorkMode");
+    let localTimeLeft = localStorage.getItem("timeLeft");
+    let localIsWorkMode = localStorage.getItem("isWorkMode");
 
     if (localWorkSeconds) {
       setWorkSeconds(localWorkSeconds);
       setNextWorkSeconds(localWorkSeconds);
 
-      setTimeLeft(localWorkSeconds);
+      if (!localTimeLeft) {
+        setTimeLeft(localWorkSeconds);
+      }
     }
     if (localBreakSeconds) {
       setBreakSeconds(localBreakSeconds);
       setNextBreakSeconds(localBreakSeconds);
+
+      if (!localTimeLeft) {
+        setTimeLeft(localBreakSeconds);
+      }
     }
     if (localSkipTransition !== null) {
       setSkipTransition(localSkipTransition === "true");
@@ -116,6 +122,7 @@ export default function PomodoroTimer() {
       setTimeLeft(localTimeLeft);
       setPausedTimeLeft(localTimeLeft);
     }
+
     if (localIsWorkMode) {
       setIsWorkMode(localIsWorkMode === "true");
     }
@@ -147,6 +154,9 @@ export default function PomodoroTimer() {
 
   // Save current time left, and mode in local storage so you can pick up where you left off when reloading page
   useEffect(() => {
+    if (timeLeft < 0) {
+      return;
+    }
     localStorage.setItem("timeLeft", timeLeft);
     localStorage.setItem("isWorkMode", isWorkMode);
   }, [timeLeft, isWorkMode]);
@@ -284,6 +294,12 @@ export default function PomodoroTimer() {
     setIsSettingsOpen(false);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.code === "Space") {
+      toggleTimer();
+    }
+  };
+
   const totalTime = isWorkMode ? workSeconds : breakSeconds;
 
   // Get animation colors based on current mode. Since this is the transition, needs to be the other mode
@@ -320,6 +336,8 @@ export default function PomodoroTimer() {
               ease: "easeInOut",
             }
       }
+      onKeyDown={handleKeyDown}
+      tabIndex={0} /* make it focusable to receive key events */
     >
       {showTransition ? (
         <TransitionScreen isWorkMode={isWorkMode} onContinue={handleContinue} />
