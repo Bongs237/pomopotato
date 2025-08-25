@@ -11,8 +11,6 @@ export default function TimerDisplay({
   arcSize = 400,
   strokeWidth = 20,
   fontSize = "text-6xl",
-
-  timerControlsProps,
 }) {
   // Calculate progress for the arc
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
@@ -22,6 +20,9 @@ export default function TimerDisplay({
   const center = arcSize / 2;
 
   const colors = isWorkMode ? COLORS.work : COLORS.break;
+
+  console.log("Total time is", totalTime)
+  console.log("Time left is", timeLeft);
 
   return (
     <div className="relative">
