@@ -10,7 +10,6 @@ const DEFAULT_BREAK_SECS = 5 * 60;
 export default function useTimer() {
   const [workSeconds, setWorkSeconds] = useState(DEFAULT_WORK_SECS);
   const [breakSeconds, setBreakSeconds] = useState(DEFAULT_BREAK_SECS);
-
   // this is for if you're in the middle of the timer running and you change settings
   // then it should only take effect on next cycle
   const [nextWorkSeconds, setNextWorkSeconds] = useState(workSeconds);
@@ -41,16 +40,13 @@ export default function useTimer() {
     breakSoundRef.current = new Audio("/break.opus");
   }, []);
 
-  const handleContinue = () => {
-    setShowTransition(false);
-    switchModes(nextWorkSeconds, nextBreakSeconds);
-    setIsRunning(true);
-  };
-
-  // Load from local storage
+  // --- Local Storage ---
   useEffect(() => {
     const localWorkSeconds = localStorage.getItem("workSeconds");
     const localBreakSeconds = localStorage.getItem("breakSeconds");
+    const localNextWorkSeconds = localStorage.getItem("nextWorkSeconds");
+    const localNextBreakSeconds = localStorage.getItem("nextBreakSeconds");
+
     const localSkipTransition = localStorage.getItem("skipTransition");
 
     let localTimeLeft = localStorage.getItem("timeLeft");
@@ -58,16 +54,15 @@ export default function useTimer() {
 
     if (localWorkSeconds) {
       setWorkSeconds(localWorkSeconds);
-      setNextWorkSeconds(localWorkSeconds);
+      setNextWorkSeconds(localNextWorkSeconds);
 
       if (!localTimeLeft) {
-        console.log("Local work seconds", localWorkSeconds)
         setTimeLeft(localWorkSeconds);
       }
     }
     if (localBreakSeconds) {
       setBreakSeconds(localBreakSeconds);
-      setNextBreakSeconds(localBreakSeconds);
+      setNextBreakSeconds(localNextBreakSeconds);
 
       if (!localTimeLeft) {
         setTimeLeft(localBreakSeconds);
@@ -78,7 +73,6 @@ export default function useTimer() {
     }
 
     if (localTimeLeft) {
-      console.log("Local time left", localTimeLeft)
       setTimeLeft(localTimeLeft);
       setPausedTimeLeft(localTimeLeft);
     }
@@ -105,14 +99,12 @@ export default function useTimer() {
       }
     }
 
-    localStorage.setItem("workSeconds", newWorkTotalSeconds);
-    localStorage.setItem("breakSeconds", newBreakTotalSeconds);
     localStorage.setItem("skipTransition", newSkipTransition);
 
     setIsSettingsOpen(false);
   };
   
-  // Save current time left, and mode in local storage so you can pick up where you left off when reloading page
+  // Save current time left and mode in local storage, so you can pick up where you left off when reloading page
   useEffect(() => {
     if (timeLeft < 0) {
       return;
@@ -121,6 +113,15 @@ export default function useTimer() {
     localStorage.setItem("isWorkMode", isWorkMode);
   }, [timeLeft, isWorkMode]);
 
+  useEffect(() => {
+    localStorage.setItem("workSeconds", workSeconds);
+    localStorage.setItem("breakSeconds", breakSeconds);
+    localStorage.setItem("nextWorkSeconds", nextWorkSeconds);
+    localStorage.setItem("nextBreakSeconds", nextBreakSeconds);
+  }, [workSeconds, breakSeconds, nextWorkSeconds, nextBreakSeconds]);
+
+
+  // --- Timer stuff ---
   useEffect(() => {
     if (isRunning && timerStartTime) {
       intervalRef.current = setInterval(() => {
@@ -133,7 +134,6 @@ export default function useTimer() {
         const modeText = isWorkMode ? "work" : "break";
         document.title = `${formatTime(remainingTime)} | ${modeText}`;
 
-        // Check if timer has finished
         if (remainingTime < 0) {
           // Stop the timer
           setIsRunning(false);
@@ -199,6 +199,12 @@ export default function useTimer() {
         setTimerStartTime(Date.now());
       }
     }
+  };
+
+  const handleContinue = () => {
+    setShowTransition(false);
+    switchModes(nextWorkSeconds, nextBreakSeconds);
+    setIsRunning(true);
   };
 
   const switchModes = (nextWorkSeconds, nextBreakSeconds) => {
