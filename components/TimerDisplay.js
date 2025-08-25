@@ -21,9 +21,6 @@ export default function TimerDisplay({
 
   const colors = isWorkMode ? COLORS.work : COLORS.break;
 
-  console.log("Total time is", totalTime)
-  console.log("Time left is", timeLeft);
-
   return (
     <div className="relative">
       <svg width={arcSize} height={arcSize} className="transform -rotate-90">
