@@ -41,6 +41,8 @@ export default function useTimer() {
   }, []);
 
   // --- Local Storage ---
+
+  // Load it
   useEffect(() => {
     const localWorkSeconds = localStorage.getItem("workSeconds");
     const localBreakSeconds = localStorage.getItem("breakSeconds");
@@ -82,7 +84,11 @@ export default function useTimer() {
     }
   }, []);
 
-  const handleSettingsSave = (newWorkTotalSeconds, newBreakTotalSeconds, newSkipTransition) => {
+  const handleSettingsSave = (
+    newWorkTotalSeconds,
+    newBreakTotalSeconds,
+    newSkipTransition,
+  ) => {
     setNextWorkSeconds(newWorkTotalSeconds);
     setNextBreakSeconds(newBreakTotalSeconds);
     setSkipTransition(newSkipTransition);
@@ -103,7 +109,7 @@ export default function useTimer() {
 
     setIsSettingsOpen(false);
   };
-  
+
   // Save current time left and mode in local storage, so you can pick up where you left off when reloading page
   useEffect(() => {
     if (timeLeft < 0) {
@@ -120,7 +126,6 @@ export default function useTimer() {
     localStorage.setItem("nextBreakSeconds", nextBreakSeconds);
   }, [workSeconds, breakSeconds, nextWorkSeconds, nextBreakSeconds]);
 
-
   // --- Timer stuff ---
   useEffect(() => {
     if (isRunning && timerStartTime) {
@@ -128,9 +133,9 @@ export default function useTimer() {
         const now = Date.now();
         const elapsedSeconds = Math.floor((now - timerStartTime) / 1000);
         const remainingTime = totalTime - elapsedSeconds;
-        
+
         setTimeLeft(remainingTime);
-        
+
         const modeText = isWorkMode ? "work" : "break";
         document.title = `${formatTime(remainingTime)} | ${modeText}`;
 
@@ -143,6 +148,19 @@ export default function useTimer() {
           // update w/ next cycle settings
           setWorkSeconds(nextWorkSeconds);
           setBreakSeconds(nextBreakSeconds);
+
+          if (Notification.permission === "granted" && document.hidden) {
+            try {
+              new Notification(`it's ${!isWorkMode ? "work" : "break"} time!`, {
+                icon: "/favicon.ico",
+                badge: "/favicon.ico",
+                requireInteraction: false,
+                silent: false,
+              });
+            } catch (error) {
+              console.error("Failed to send notification:", error);
+            }
+          }
 
           // Show transition screen only if skip transition is disabled
           if (!skipTransition) {
@@ -250,7 +268,7 @@ export default function useTimer() {
     isRunning,
     totalTime,
     switchModes,
-    
+
     handleKeyDown,
     toggleTimer,
     resetTimer,

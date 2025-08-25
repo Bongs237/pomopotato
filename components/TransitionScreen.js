@@ -3,30 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { COLORS } from "@/lib/colors";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export default function TransitionScreen({ isWorkMode, onContinue }) {
   const nextMode = !isWorkMode ? "work" : "break";
   const colors = !isWorkMode ? COLORS.work : COLORS.break;
-  const notificationSentRef = useRef(false);
 
   useEffect(() => {
     document.title = `it's ${nextMode} time!`;
-
-    if (Notification.permission === "granted" && !notificationSentRef.current && document.hidden) {
-      try {
-        new Notification(`it's ${nextMode} time!`, {
-          icon: "/favicon.ico",
-          badge: "/favicon.ico",
-          requireInteraction: false,
-          silent: false,
-        });
-        notificationSentRef.current = true;
-      } catch (error) {
-        console.error("Failed to send notification:", error);
-      }
-    }
-  }, [isWorkMode, nextMode]);
+  }, [isWorkMode]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
