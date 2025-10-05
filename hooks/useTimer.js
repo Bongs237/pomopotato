@@ -126,6 +126,11 @@ export default function useTimer() {
     localStorage.setItem("nextBreakSeconds", nextBreakSeconds);
   }, [workSeconds, breakSeconds, nextWorkSeconds, nextBreakSeconds]);
 
+  useEffect(() => {
+    const modeText = isWorkMode ? "work" : "break";
+    document.title = `${formatTime(timeLeft)} | ${modeText}`;
+  }, [timeLeft, isWorkMode]);
+
   // --- Timer stuff ---
   useEffect(() => {
     if (isRunning && timerStartTime) {
@@ -135,9 +140,6 @@ export default function useTimer() {
         const remainingTime = totalTime - elapsedSeconds;
 
         setTimeLeft(remainingTime);
-
-        const modeText = isWorkMode ? "work" : "break";
-        document.title = `${formatTime(remainingTime)} | ${modeText}`;
 
         if (remainingTime < 0) {
           // Stop the timer
