@@ -194,6 +194,11 @@ export default function useTimer() {
   ]);
 
   const toggleTimer = () => {
+    if (showTransition) {
+      handleContinue();
+      return;
+    }
+
     if (isRunning) {
       // Pause the timer
       setIsRunning(false);
