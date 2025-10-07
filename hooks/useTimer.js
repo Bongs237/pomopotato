@@ -126,10 +126,15 @@ export default function useTimer() {
     localStorage.setItem("nextBreakSeconds", nextBreakSeconds);
   }, [workSeconds, breakSeconds, nextWorkSeconds, nextBreakSeconds]);
 
+  // title setting
   useEffect(() => {
     const modeText = isWorkMode ? "work" : "break";
-    document.title = `${formatTime(timeLeft)} | ${modeText}`;
-  }, [timeLeft, isWorkMode]);
+    if (!showTransition) {
+      document.title = `${formatTime(timeLeft)} | ${modeText}`;
+    } else {
+      document.title = `it's ${modeText} time!`;
+    }
+  }, [timeLeft, isWorkMode, showTransition]);
 
   // --- Timer stuff ---
   useEffect(() => {

@@ -9,10 +9,6 @@ export default function TransitionScreen({ isWorkMode, onContinue }) {
   const nextMode = !isWorkMode ? "work" : "break";
   const colors = !isWorkMode ? COLORS.work : COLORS.break;
 
-  useEffect(() => {
-    document.title = `it's ${nextMode} time!`;
-  }, [isWorkMode]);
-
   return (
     <div className="flex flex-col items-center justify-center space-y-8">
       <div className="text-center">
