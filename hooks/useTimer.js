@@ -128,10 +128,11 @@ export default function useTimer() {
 
   // title setting
   useEffect(() => {
-    const modeText = isWorkMode ? "work" : "break";
     if (!showTransition) {
+      const modeText = isWorkMode ? "work" : "break";
       document.title = `${formatTime(timeLeft)} | ${modeText}`;
     } else {
+      const modeText = !isWorkMode ? "work" : "break";
       document.title = `it's ${modeText} time!`;
     }
   }, [timeLeft, isWorkMode, showTransition]);
