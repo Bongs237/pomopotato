@@ -1,7 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button"
-import { Play, Pause, RotateCcw, Settings, ChevronLast, EllipsisVertical } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Settings,
+  ChevronLast,
+  EllipsisVertical,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +16,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 import { COLORS } from "@/lib/colors";
+import { TimerControlsProps } from "@/types";
 
 export default function TimerControls({
   isRunning,
@@ -20,7 +28,7 @@ export default function TimerControls({
   onNextMode,
   onResetTimer,
   onOpenSettings,
-}) {
+}: TimerControlsProps) {
   const colors = isWorkMode ? COLORS.work : COLORS.break;
 
   return (
@@ -28,6 +36,7 @@ export default function TimerControls({
       <Button
         onClick={onToggleTimer}
         size="lg"
+        variant="default"
         className={`w-16 h-16 rounded-full ${colors.button}`}
       >
         {isRunning ? <Pause size={24} /> : <Play size={24} />}
@@ -46,9 +55,23 @@ export default function TimerControls({
         <DropdownMenuTrigger asChild>
           <EllipsisVertical className="mx-2" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={onNextMode}><ChevronLast />skip to next mode</DropdownMenuItem>
-          <DropdownMenuItem onClick={onResetTimer}><RotateCcw />reset timer</DropdownMenuItem>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuItem
+            onClick={onNextMode}
+            className="cursor-pointer"
+            inset
+          >
+            <ChevronLast className="mr-2 h-4 w-4" />
+            skip to next mode
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={onResetTimer}
+            className="cursor-pointer"
+            inset
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            reset timer
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

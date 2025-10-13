@@ -4,8 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { COLORS } from "@/lib/colors";
 import { useEffect } from "react";
+import { TransitionScreenProps } from "@/types";
 
-export default function TransitionScreen({ isWorkMode, onContinue }) {
+export default function TransitionScreen({
+  isWorkMode,
+  onContinue,
+}: TransitionScreenProps) {
   const nextMode = !isWorkMode ? "work" : "break";
   const colors = !isWorkMode ? COLORS.work : COLORS.break;
 

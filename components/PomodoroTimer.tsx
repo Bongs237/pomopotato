@@ -24,7 +24,7 @@ export default function PomodoroTimer() {
     isRunning,
     totalTime,
     switchModes,
-    
+
     handleKeyDown,
     toggleTimer,
     resetTimer,
@@ -59,7 +59,7 @@ export default function PomodoroTimer() {
 
   return (
     <motion.div
-      key={showTransition ? 'transition' : 'normal'}
+      key={showTransition ? "transition" : "normal"}
       className="min-h-screen flex items-center justify-center"
       animate={{
         backgroundColor: showTransition
@@ -73,8 +73,8 @@ export default function PomodoroTimer() {
               colors.light,
             ]
           : isWorkMode
-          ? COLORS.work.light
-          : COLORS.break.light,
+            ? COLORS.work.light
+            : COLORS.break.light,
       }}
       transition={
         showTransition

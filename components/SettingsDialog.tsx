@@ -13,27 +13,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toMinSec, toTotalSecs } from "@/lib/time_utils";
+import { SettingsDialogProps, TimeInput } from "@/types";
 
 export default function SettingsDialog({
   isOpen,
   onOpenChange,
-
   workTotalSeconds,
   breakTotalSeconds,
   skipTransition,
-
   onSave,
-}) {
+}: SettingsDialogProps) {
   const [workMinutes, workSeconds] = toMinSec(workTotalSeconds);
   const [breakMinutes, breakSeconds] = toMinSec(breakTotalSeconds);
 
-  const [localWorkMinutes, setLocalWorkMinutes] = useState(workMinutes);
-  const [localWorkSeconds, setLocalWorkSeconds] = useState(workSeconds);
+  const [localWorkMinutes, setLocalWorkMinutes] =
+    useState<TimeInput>(workMinutes);
+  const [localWorkSeconds, setLocalWorkSeconds] =
+    useState<TimeInput>(workSeconds);
 
-  const [localBreakMinutes, setLocalBreakMinutes] = useState(breakMinutes);
-  const [localBreakSeconds, setLocalBreakSeconds] = useState(breakSeconds);
+  const [localBreakMinutes, setLocalBreakMinutes] =
+    useState<TimeInput>(breakMinutes);
+  const [localBreakSeconds, setLocalBreakSeconds] =
+    useState<TimeInput>(breakSeconds);
 
-  const [localSkipTransition, setLocalSkipTransition] = useState(skipTransition);
+  const [localSkipTransition, setLocalSkipTransition] =
+    useState<boolean>(skipTransition);
 
   useEffect(() => {
     setLocalWorkMinutes(workMinutes);
@@ -41,21 +45,32 @@ export default function SettingsDialog({
     setLocalBreakMinutes(breakMinutes);
     setLocalBreakSeconds(breakSeconds);
     setLocalSkipTransition(skipTransition);
-  }, [workMinutes, workSeconds, breakMinutes, breakSeconds, workTotalSeconds, breakTotalSeconds, skipTransition]);
+  }, [
+    workMinutes,
+    workSeconds,
+    breakMinutes,
+    breakSeconds,
+    workTotalSeconds,
+    breakTotalSeconds,
+    skipTransition,
+  ]);
 
-  const parseOr0 = (strNum) => Number.parseInt(strNum) || 0;
+  const parseOr0 = (strNum: TimeInput): number =>
+    Number.parseInt(String(strNum)) || 0;
 
-  const handleChange = (setter) => (e) => {
-    const val = e.target.value;
+  const handleChange =
+    (setter: (value: TimeInput) => void) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
 
-    if (val.trim() === "") {
-      setter("");
-    } else if (Number.parseInt(val)) {
-      setter(Number.parseInt(val));
-    } else {
-      setter(0);
-    }
-  };
+      if (val.trim() === "") {
+        setter("");
+      } else if (Number.parseInt(val)) {
+        setter(Number.parseInt(val));
+      } else {
+        setter(0);
+      }
+    };
 
   const sendSetTimes = () => {
     // Parse and clamp to minimum 1 second

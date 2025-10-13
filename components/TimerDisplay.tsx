@@ -1,8 +1,8 @@
 "use client";
 
-import TimerControls from "@/components/TimerControls";
 import { formatTime } from "@/lib/time_utils";
 import { COLORS } from "@/lib/colors";
+import { TimerDisplayProps } from "@/types";
 
 export default function TimerDisplay({
   timeLeft,
@@ -11,7 +11,7 @@ export default function TimerDisplay({
   arcSize = 400,
   strokeWidth = 20,
   fontSize = "text-6xl",
-}) {
+}: TimerDisplayProps) {
   // Calculate progress for the arc
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
 
