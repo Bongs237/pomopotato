@@ -13,8 +13,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -55,21 +53,13 @@ export default function TimerControls({
         <DropdownMenuTrigger asChild>
           <EllipsisVertical className="mx-2" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuItem
-            onClick={onNextMode}
-            className="cursor-pointer"
-            inset
-          >
-            <ChevronLast className="mr-2 h-4 w-4" />
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={onNextMode}>
+            <ChevronLast />
             skip to next mode
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={onResetTimer}
-            className="cursor-pointer"
-            inset
-          >
-            <RotateCcw className="mr-2 h-4 w-4" />
+          <DropdownMenuItem onClick={onResetTimer}>
+            <RotateCcw />
             reset timer
           </DropdownMenuItem>
         </DropdownMenuContent>

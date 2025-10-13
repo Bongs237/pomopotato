@@ -11,22 +11,6 @@ export interface TimerState {
   skipTransition: boolean;
 }
 
-export interface TimerActions {
-  switchModes: (workSeconds: number, breakSeconds: number) => void;
-  handleKeyDown: (event: React.KeyboardEvent) => void;
-  toggleTimer: () => void;
-  resetTimer: () => void;
-  handleContinue: () => void;
-  skipTransition: () => void;
-  handleSettingsSave: (
-    workSeconds: number,
-    breakSeconds: number,
-    skipTransition: boolean,
-  ) => void;
-  openSettings: () => void;
-  closeSettings: () => void;
-}
-
 // Component prop types
 export interface TimerDisplayProps {
   timeLeft: number;
@@ -64,9 +48,6 @@ export interface SettingsDialogProps {
   ) => void;
 }
 
-// Hook return types
-export interface UseTimerReturn extends TimerState, TimerActions {}
-
 export interface UseDimensionsReturn {
   arcSize: number;
   strokeWidth: number;
@@ -79,3 +60,51 @@ export interface TimeValues {
   minutes: number;
   seconds: number;
 }
+
+// Additional types for useTimer hook
+export interface TimerConfig {
+  workSeconds: number;
+  breakSeconds: number;
+  nextWorkSeconds: number;
+  nextBreakSeconds: number;
+}
+
+export interface TimerTiming {
+  timerStartTime: number | null;
+  pausedTimeLeft: number | null;
+}
+
+export interface TimerUI {
+  showTransition: boolean;
+  skipTransition: boolean;
+  isSettingsOpen: boolean;
+}
+
+export interface AudioRefs {
+  workSoundRef: React.RefObject<HTMLAudioElement>;
+  breakSoundRef: React.RefObject<HTMLAudioElement>;
+}
+
+export interface UseTimerState extends TimerConfig, TimerTiming, TimerUI {
+  timeLeft: number;
+  isWorkMode: boolean;
+  isRunning: boolean;
+  totalTime: number;
+}
+
+export interface UseTimerActions {
+  handleSettingsSave: (
+    newWorkTotalSeconds: number,
+    newBreakTotalSeconds: number,
+    newSkipTransition: boolean,
+  ) => void;
+  toggleTimer: () => void;
+  handleContinue: () => void;
+  switchModes: (nextWorkSeconds: number, nextBreakSeconds: number) => void;
+  resetTimer: () => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
+  openSettings: () => void;
+  closeSettings: () => void;
+}
+
+export type UseTimerReturn = UseTimerState & UseTimerActions;
